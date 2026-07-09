@@ -47,6 +47,7 @@ async function bootstrap() {
     .addTag('Hopital', 'Gestion des établissements de santé')
     .addTag('Super Admin', 'Supervision et validation de la plateforme')
     .addTag('Medecin', 'Gestion des médecins et agendas')
+    .addTag('Patient', 'Gestion des patients')
     .addTag('Rendez-vous', 'Prise et gestion des rendez-vous')
     .addTag('Dossier Medical', 'Dossier médical patient portable')
     .addTag('Consultation', 'Consultations et ordonnances')

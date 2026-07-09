@@ -21,6 +21,7 @@ import { UserModule } from './user/user.module';
 import { MailModule } from './mail/mail.module';
 import { HopitalModule } from './hopital/hopital.module';
 import { SpecialiteModule } from './specialite/specialite.module';
+import { PatientModule } from './patient/patient.module';
 
 @Module({
   imports: [
@@ -52,7 +53,7 @@ import { SpecialiteModule } from './specialite/specialite.module';
           AutorisationDossier,
           AuditLog,
         ],
-        synchronize: true,
+        synchronize: false,
         logging: true,
       }),
     }),
@@ -61,6 +62,7 @@ import { SpecialiteModule } from './specialite/specialite.module';
     MailModule,
     HopitalModule,
     SpecialiteModule,
+    PatientModule,
   ],
 })
 export class AppModule {}
