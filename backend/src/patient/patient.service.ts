@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Patient } from '../entities/patient.entity';
 import { User, Role } from '../entities/user.entity';
 import { InscrirePatientDto } from './dto/inscrire-patient.dto';
+import { ModifierPatientDto } from './dto/modifier-patient.dto';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -71,5 +72,18 @@ export class PatientService {
       throw new BadRequestException('Patient introuvable');
     }
     return patient;
+  }
+
+  async monProfil(userId: string): Promise<Patient> {
+    return this.trouverParUserId(userId);
+  }
+
+  async modifierProfil(
+    userId: string,
+    dto: ModifierPatientDto,
+  ): Promise<Patient> {
+    const patient = await this.trouverParUserId(userId);
+    Object.assign(patient, dto);
+    return this.patientRepository.save(patient);
   }
 }

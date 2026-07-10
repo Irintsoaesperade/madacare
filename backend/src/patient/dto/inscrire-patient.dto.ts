@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import {
   IsEmail,
   IsString,
@@ -7,7 +8,9 @@ import {
   IsOptional,
   IsEnum,
   IsDateString,
+  Matches,
 } from 'class-validator';
+import { IsNotFutureDate } from '../validators/is-not-future-date.validator';
 import { Sexe } from '../../entities/patient.entity';
 
 export class InscrirePatientDto {
@@ -23,17 +26,24 @@ export class InscrirePatientDto {
   @ApiProperty({ example: 'Rakoto' })
   @IsString()
   @IsNotEmpty()
+  @Matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, {
+    message: 'Le nom ne doit contenir que des lettres',
+  })
   nom: string;
 
   @ApiProperty({ example: 'Jean' })
   @IsString()
   @IsNotEmpty()
+  @Matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, {
+    message: 'Le prénom ne doit contenir que des lettres',
+  })
   prenom: string;
 
-  @ApiProperty({ example: '1995-05-20', required: false })
-  @IsOptional()
-  @IsDateString()
-  dateNaissance?: string;
+ @ApiProperty({ required: false, example: '1995-05-20' })
+ @IsOptional()
+ @IsDateString()
+ @IsNotFutureDate()
+ dateNaissance?: string;
 
   @ApiProperty({ enum: Sexe, required: false })
   @IsOptional()
@@ -42,11 +52,15 @@ export class InscrirePatientDto {
 
   @ApiProperty({ example: '101123456789', required: false })
   @IsOptional()
-  @IsString()
+  @Matches(/^[0-9]{12}$/, {
+    message: 'Le CIN doit contenir exactement 12 chiffres',
+  })
   cin?: string;
 
   @ApiProperty({ example: '0341234567', required: false })
   @IsOptional()
-  @IsString()
+  @Matches(/^0[0-9]{9}$/, {
+    message: 'Le téléphone doit être au format malgache (10 chiffres, commence par 0)',
+  })
   telephone?: string;
 }
