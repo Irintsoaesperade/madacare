@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Patient } from '../entities/patient.entity';
 import { User, Role } from '../entities/user.entity';
+import { DossierMedical } from '../entities/dossier-medical.entity';
 import { InscrirePatientDto } from './dto/inscrire-patient.dto';
 import { ModifierPatientDto } from './dto/modifier-patient.dto';
 import { AuthService } from '../auth/auth.service';
@@ -14,6 +15,8 @@ export class PatientService {
     private patientRepository: Repository<Patient>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(DossierMedical)
+    private dossierMedicalRepository: Repository<DossierMedical>,
     private authService: AuthService,
   ) {}
 
@@ -45,9 +48,20 @@ export class PatientService {
       sexe: dto.sexe,
       cin: dto.cin,
       telephone: dto.telephone,
+      lieuNaissance: dto.lieuNaissance,
+      adresse: dto.adresse,
       user: userSauvegarde,
     });
-    await this.patientRepository.save(patient);
+    const patientSauvegarde = await this.patientRepository.save(patient);
+
+    // Le dossier médical est créé vide, automatiquement, en même temps que le patient
+    const dossierVide = this.dossierMedicalRepository.create({
+      patient: patientSauvegarde,
+      allergies: [],
+      maladiesChroniques: [],
+      medicamentsEnCours: [],
+    });
+    await this.dossierMedicalRepository.save(dossierVide);
 
     return { message: 'Inscription réussie. Vous pouvez vous connecter.' };
   }

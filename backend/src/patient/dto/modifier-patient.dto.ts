@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsEnum, IsDateString, Matches } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsDateString,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 import { IsNotFutureDate } from '../validators/is-not-future-date.validator';
 import { Sexe } from '../../entities/patient.entity';
 
@@ -37,4 +44,12 @@ export class ModifierPatientDto {
     message: 'Le téléphone doit être au format malgache (10 chiffres, commence par 0)',
   })
   telephone?: string;
+
+  @ApiProperty({ required: false, example: 'Lot II A 45 Ampasambazaha, Fianarantsoa' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255, {
+    message: "L'adresse ne doit pas dépasser 255 caractères",
+  })
+  adresse?: string;
 }

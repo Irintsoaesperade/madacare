@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-
 import {
   IsEmail,
   IsString,
@@ -9,6 +8,7 @@ import {
   IsEnum,
   IsDateString,
   Matches,
+  MaxLength,
 } from 'class-validator';
 import { IsNotFutureDate } from '../validators/is-not-future-date.validator';
 import { Sexe } from '../../entities/patient.entity';
@@ -39,11 +39,11 @@ export class InscrirePatientDto {
   })
   prenom: string;
 
- @ApiProperty({ required: false, example: '1995-05-20' })
- @IsOptional()
- @IsDateString()
- @IsNotFutureDate()
- dateNaissance?: string;
+  @ApiProperty({ required: false, example: '1995-05-20' })
+  @IsOptional()
+  @IsDateString()
+  @IsNotFutureDate()
+  dateNaissance?: string;
 
   @ApiProperty({ enum: Sexe, required: false })
   @IsOptional()
@@ -63,4 +63,20 @@ export class InscrirePatientDto {
     message: 'Le téléphone doit être au format malgache (10 chiffres, commence par 0)',
   })
   telephone?: string;
+
+  @ApiProperty({ example: 'Fianarantsoa', required: false })
+  @IsOptional()
+  @IsString()
+  @Matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, {
+    message: 'Le lieu de naissance ne doit contenir que des lettres',
+  })
+  lieuNaissance?: string;
+
+  @ApiProperty({ example: 'Lot II A 45 Ampasambazaha, Fianarantsoa', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255, {
+    message: "L'adresse ne doit pas dépasser 255 caractères",
+  })
+  adresse?: string;
 }

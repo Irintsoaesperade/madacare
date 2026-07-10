@@ -31,6 +31,9 @@ export class Patient {
   @Column({ type: 'date', nullable: true })
   dateNaissance: Date;
 
+  @Column({ nullable: true })
+  lieuNaissance: string;
+
   @Column({ type: 'enum', enum: Sexe, nullable: true })
   sexe: Sexe;
 
@@ -39,6 +42,9 @@ export class Patient {
 
   @Column({ nullable: true })
   telephone: string;
+
+  @Column({ nullable: true })
+  adresse: string;
 
   @CreateDateColumn()
   createdAt: Date;
