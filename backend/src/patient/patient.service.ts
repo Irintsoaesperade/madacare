@@ -46,7 +46,6 @@ export class PatientService {
       prenom: dto.prenom,
       dateNaissance: dto.dateNaissance ? new Date(dto.dateNaissance) : undefined,
       sexe: dto.sexe,
-      cin: dto.cin,
       telephone: dto.telephone,
       lieuNaissance: dto.lieuNaissance,
       adresse: dto.adresse,
@@ -92,7 +91,7 @@ export class PatientService {
     return this.trouverParUserId(userId);
   }
 
-  async modifierProfil(
+ async modifierProfil(
     userId: string,
     dto: ModifierPatientDto,
   ): Promise<Patient> {

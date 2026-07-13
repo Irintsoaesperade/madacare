@@ -37,8 +37,6 @@ export class Patient {
   @Column({ type: 'enum', enum: Sexe, nullable: true })
   sexe: Sexe;
 
-  @Column({ nullable: true })
-  cin: string;
 
   @Column({ nullable: true })
   telephone: string;

@@ -49,14 +49,7 @@ export class InscrirePatientDto {
   @IsOptional()
   @IsEnum(Sexe)
   sexe?: Sexe;
-
-  @ApiProperty({ example: '101123456789', required: false })
-  @IsOptional()
-  @Matches(/^[0-9]{12}$/, {
-    message: 'Le CIN doit contenir exactement 12 chiffres',
-  })
-  cin?: string;
-
+  
   @ApiProperty({ example: '0341234567', required: false })
   @IsOptional()
   @Matches(/^0[0-9]{9}$/, {
