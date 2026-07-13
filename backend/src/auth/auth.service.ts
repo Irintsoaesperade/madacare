@@ -17,7 +17,6 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  // Valider email + mot de passe
   async validerUtilisateur(
     email: string,
     motDePasse: string,
@@ -25,38 +24,32 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
     if (!user) return null;
     if (!user.actif) return null;
-
     const motDePasseValide = await bcrypt.compare(motDePasse, user.motDePasse);
     if (!motDePasseValide) return null;
-
     return user;
   }
 
-  // Générer access token + refresh token
   async genererTokens(user: User): Promise<{
-  accessToken: string;
-  refreshToken: string;
-  doitChangerMotDePasse: boolean;
-}> {
-  const payload = { sub: user.id, email: user.email, role: user.role };
+    accessToken: string;
+    refreshToken: string;
+    doitChangerMotDePasse: boolean;
+  }> {
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_SECRET'),
+      expiresIn: '24h' as const,
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: '30d' as const,
+    });
+    return {
+      accessToken,
+      refreshToken,
+      doitChangerMotDePasse: user.doitChangerMotDePasse,
+    };
+  }
 
-  const accessToken = this.jwtService.sign(payload, {
-    secret: this.configService.get<string>('JWT_SECRET'),
-    expiresIn: '24h' as const,
-  });
-
-  const refreshToken = this.jwtService.sign(payload, {
-    secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-    expiresIn: '30d' as const,
-  });
-
-  return {
-    accessToken,
-    refreshToken,
-    doitChangerMotDePasse: user.doitChangerMotDePasse,
-  };
-}
-  // Connexion
   async seConnecter(email: string, motDePasse: string) {
     const user = await this.validerUtilisateur(email, motDePasse);
     if (!user) {
@@ -68,7 +61,6 @@ export class AuthService {
     return this.genererTokens(user);
   }
 
-  // Rafraîchir le token
   async rafraichirToken(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
@@ -84,12 +76,22 @@ export class AuthService {
     }
   }
 
-  // Hacher un mot de passe
+  async verifierEmail(token: string): Promise<{ message: string }> {
+    const user = await this.userService.findByTokenVerification(token);
+    if (!user) {
+      throw new BadRequestException('Lien de vérification invalide ou expiré');
+    }
+    await this.userService.update(user.id, {
+      emailVerifie: true,
+      tokenVerification: undefined,
+    });
+    return { message: 'Email vérifié avec succès. Vous pouvez vous connecter.' };
+  }
+
   async hacherMotDePasse(motDePasse: string): Promise<string> {
     return bcrypt.hash(motDePasse, 10);
   }
 
-  // Générer un token aléatoire
   genererToken(): string {
     return (
       Math.random().toString(36).substring(2) +

@@ -1,7 +1,9 @@
 import {
   Controller,
   Post,
+  Get,
   Body,
+  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -29,5 +31,13 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Nouveau token généré' })
   async rafraichirToken(@Body('refreshToken') refreshToken: string) {
     return this.authService.rafraichirToken(refreshToken);
+  }
+
+  @Get('verify-email')
+  @ApiOperation({ summary: "Vérifier l'email via le lien reçu" })
+  @ApiResponse({ status: 200, description: 'Email vérifié' })
+  @ApiResponse({ status: 400, description: 'Lien invalide ou expiré' })
+  async verifierEmail(@Query('token') token: string) {
+    return this.authService.verifierEmail(token);
   }
 }

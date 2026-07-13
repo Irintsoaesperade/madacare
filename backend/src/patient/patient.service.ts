@@ -7,6 +7,7 @@ import { DossierMedical } from '../entities/dossier-medical.entity';
 import { InscrirePatientDto } from './dto/inscrire-patient.dto';
 import { ModifierPatientDto } from './dto/modifier-patient.dto';
 import { AuthService } from '../auth/auth.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class PatientService {
@@ -18,6 +19,7 @@ export class PatientService {
     @InjectRepository(DossierMedical)
     private dossierMedicalRepository: Repository<DossierMedical>,
     private authService: AuthService,
+    private mailService: MailService,
   ) {}
 
   async inscrire(dto: InscrirePatientDto): Promise<{ message: string }> {
@@ -32,11 +34,14 @@ export class PatientService {
       dto.motDePasse,
     );
 
+    const tokenVerification = this.authService.genererToken();
+
     const user = this.userRepository.create({
       email: dto.email,
       motDePasse: motDePasseHache,
       role: Role.PATIENT,
-      emailVerifie: true, // simplifié pour le MVP
+      emailVerifie: false,
+      tokenVerification,
       actif: true,
     });
     const userSauvegarde = await this.userRepository.save(user);
@@ -53,7 +58,6 @@ export class PatientService {
     });
     const patientSauvegarde = await this.patientRepository.save(patient);
 
-    // Le dossier médical est créé vide, automatiquement, en même temps que le patient
     const dossierVide = this.dossierMedicalRepository.create({
       patient: patientSauvegarde,
       allergies: [],
@@ -62,7 +66,12 @@ export class PatientService {
     });
     await this.dossierMedicalRepository.save(dossierVide);
 
-    return { message: 'Inscription réussie. Vous pouvez vous connecter.' };
+    await this.mailService.sendVerificationEmail(dto.email, tokenVerification);
+
+    return {
+      message:
+        'Inscription réussie. Un email de vérification vous a été envoyé.',
+    };
   }
 
   async trouverParId(id: string): Promise<Patient> {
@@ -91,7 +100,7 @@ export class PatientService {
     return this.trouverParUserId(userId);
   }
 
- async modifierProfil(
+  async modifierProfil(
     userId: string,
     dto: ModifierPatientDto,
   ): Promise<Patient> {
