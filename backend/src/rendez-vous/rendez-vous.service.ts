@@ -25,6 +25,12 @@ export class RendezVousService {
       throw new BadRequestException('Profil patient introuvable');
     }
 
+    if (!patient.telephone) {
+      throw new BadRequestException(
+        'Merci de compléter votre téléphone dans votre profil avant de prendre rendez-vous.',
+      );
+    }
+
     const medecin = await this.medecinRepository.findOne({
       where: { id: dto.medecinId },
       relations: { hopital: true },
@@ -35,7 +41,6 @@ export class RendezVousService {
 
     const dateHeure = new Date(dto.dateHeure);
 
-    // Vérifier que le créneau n'est pas déjà pris
     const conflit = await this.rendezVousRepository.findOne({
       where: {
         medecin: { id: medecin.id },
