@@ -88,6 +88,37 @@ export class AuthService {
   async hacherMotDePasse(motDePasse: string): Promise<string> {
     return bcrypt.hash(motDePasse, 10);
   }
+  async activerCompteMedecin(
+  token: string,
+  nouveauMotDePasse: string,
+): Promise<{ message: string }> {
+  const userTrouve = await this.userService.findByTokenActivation(token);
+
+  if (!userTrouve) {
+    throw new UnauthorizedException('Token d\'activation invalide');
+  }
+
+  if (
+    userTrouve.tokenActivationExpire &&
+    new Date() > userTrouve.tokenActivationExpire
+  ) {
+    throw new UnauthorizedException('Token d\'activation expiré');
+  }
+
+  const motDePasseHache = await this.hacherMotDePasse(nouveauMotDePasse);
+  await this.userService.update(userTrouve.id, {
+    motDePasse: motDePasseHache,
+    emailVerifie: true,
+    actif: true,
+    tokenActivation: null,
+    tokenActivationExpire: null,
+    doitChangerMotDePasse: false,
+  });
+
+  return {
+    message: 'Compte activé avec succès. Vous pouvez maintenant vous connecter.',
+  };
+}
 
   // Générer un token aléatoire
   genererToken(): string {

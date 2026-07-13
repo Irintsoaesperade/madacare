@@ -36,17 +36,17 @@ export class User {
   @Column({ default: false })
   emailVerifie: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   @Exclude()
-  tokenVerification: string;
+  tokenVerification: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   @Exclude()
-  tokenActivation: string;
+  tokenActivation: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   @Exclude()
-  tokenActivationExpire: Date;
+  tokenActivationExpire: Date | null;
 
   @Column({ default: false })
   doitChangerMotDePasse: boolean;

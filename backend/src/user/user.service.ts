@@ -31,4 +31,9 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
+  async findByTokenActivation(token: string): Promise<User | null> {
+  return this.userRepository.findOne({
+    where: { tokenActivation: token },
+  });
+}
 }

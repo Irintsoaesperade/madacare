@@ -8,6 +8,8 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { ActiverCompteDto } from './dto/activer-compte.dto';
+
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -30,4 +32,15 @@ export class AuthController {
   async rafraichirToken(@Body('refreshToken') refreshToken: string) {
     return this.authService.rafraichirToken(refreshToken);
   }
+  @Post('activer-compte')
+@HttpCode(HttpStatus.OK)
+@ApiOperation({ summary: 'Activation du compte médecin (premier login)' })
+@ApiResponse({ status: 200, description: 'Compte activé avec succès' })
+@ApiResponse({ status: 401, description: 'Token invalide ou expiré' })
+async activerCompte(@Body() dto: ActiverCompteDto) {
+  return this.authService.activerCompteMedecin(
+    dto.token,
+    dto.nouveauMotDePasse,
+  );
+}
 }
