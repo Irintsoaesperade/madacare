@@ -48,3 +48,17 @@ export function redirectionSelonRole(role: Role): string {
       return "/login";
   }
 }
+interface RegisterPayload {
+  prenom: string;
+  nom: string;
+  email: string;
+  motDePasse: string;
+}
+
+export async function inscrirePatient(payload: RegisterPayload) {
+  const { data } = await api.post<{ message: string }>(
+    "/patients/inscrire",
+    payload
+  );
+  return data;
+}
