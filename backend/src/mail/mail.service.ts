@@ -19,8 +19,12 @@ export class MailService {
     });
   }
 
+  private urlFrontend(): string {
+    return this.configService.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
+  }
+
   async sendVerificationEmail(email: string, token: string): Promise<void> {
-    const url = `http://localhost:3002/auth/verify-email?token=${token}`;
+    const url = `${this.urlFrontend()}/auth/verify-email?token=${token}`;
     await this.transporter.sendMail({
       from: this.configService.get<string>('MAIL_FROM'),
       to: email,
@@ -43,7 +47,7 @@ export class MailService {
     token: string,
     nomHopital: string,
   ): Promise<void> {
-    const url = `http://localhost:3002/auth/activation?token=${token}`;
+    const url = `${this.urlFrontend()}/auth/activation?token=${token}`;
     await this.transporter.sendMail({
       from: this.configService.get<string>('MAIL_FROM'),
       to: email,
