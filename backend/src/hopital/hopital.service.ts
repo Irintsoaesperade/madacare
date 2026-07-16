@@ -45,23 +45,30 @@ export class HopitalService {
     const userSauvegarde = await this.userRepository.save(user);
 
     // Créer le profil Hôpital
-    const hopital = this.hopitalRepository.create({
-      nom: dto.nom,
-      adresse: dto.adresse,
-      ville: dto.ville,
-      region: dto.region,
-      telephone: dto.telephone,
-      nomDirecteurMedical: dto.nomDirecteurMedical,
-      cinDirecteur: dto.cinDirecteur,
-      numeroAgrement: dto.numeroAgrement,
-      nif: dto.nif,
-      stat: dto.stat,
-      heureOuverture: dto.heureOuverture,
-      heureFermeture: dto.heureFermeture,
-      statut: StatutHopital.EN_ATTENTE_VALIDATION,
-      user: userSauvegarde,
-    });
-    await this.hopitalRepository.save(hopital);
+const hopital = this.hopitalRepository.create({
+  nom: dto.nom,
+  type: dto.type,
+  adresse: dto.adresse,
+  ville: dto.ville,
+  region: dto.region,
+  localisation: dto.localisation,
+  telephone: dto.telephone,
+  telephoneUrgence: dto.telephoneUrgence,
+  siteWeb: dto.siteWeb,
+  logoUrl: dto.logoUrl,
+  slogan: dto.slogan,
+  services: dto.services,
+  heureOuverture: dto.heureOuverture,
+  heureFermeture: dto.heureFermeture,
+  nomDirecteurMedical: dto.nomDirecteurMedical,
+  cinDirecteur: dto.cinDirecteur,
+  numeroAgrement: dto.numeroAgrement,
+  nif: dto.nif,
+  stat: dto.stat,
+  statut: StatutHopital.EN_ATTENTE_VALIDATION,
+  user: userSauvegarde,
+});
+await this.hopitalRepository.save(hopital);
 
     return {
       message:

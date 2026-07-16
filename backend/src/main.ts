@@ -25,7 +25,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3002'],
+    origin: ['http://localhost:3000', 'http://localhost:3002', 'http://localhost:3001'],
     credentials: true,
   });
 
@@ -45,7 +45,6 @@ async function bootstrap() {
     )
     .addTag('Auth', 'Authentification et gestion des comptes')
     .addTag('Hopital', 'Gestion des établissements de santé')
-    .addTag('Super Admin', 'Supervision et validation de la plateforme')
     .addTag('Medecin', 'Gestion des médecins et agendas')
     .addTag('Patient', 'Gestion des patients')
     .addTag('Rendez-vous', 'Prise et gestion des rendez-vous')
@@ -60,14 +59,13 @@ async function bootstrap() {
     },
   });
 
-  // Seeds — déclaration dataSource en premier
   const dataSource = app.get(getDataSourceToken());
   await seedSuperAdmin(dataSource);
   await seedSpecialites(dataSource);
 
   await app.listen(process.env.PORT ?? 4000);
-  console.log(`🚀 MadaCare API      : http://localhost:4000/api`);
-  console.log(`📚 MadaCare Swagger  : http://localhost:4000/api/docs`);
+  console.log(`MadaCare API      : http://localhost:4000/api`);
+  console.log(`MadaCare Swagger  : http://localhost:4000/api/docs`);
 }
 
 bootstrap();

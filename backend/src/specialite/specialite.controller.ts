@@ -21,7 +21,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../entities/user.entity';
 
-@ApiTags('Super Admin')
+@ApiTags('Medecin')
 @Controller('specialites')
 export class SpecialiteController {
   constructor(private specialiteService: SpecialiteService) {}

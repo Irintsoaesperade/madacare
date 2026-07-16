@@ -55,7 +55,7 @@ import { RendezVousModule } from './rendez-vous/rendez-vous.module';
           AutorisationDossier,
           AuditLog,
         ],
-        synchronize: false,
+        synchronize: true,
         logging: true,
       }),
     }),

@@ -22,13 +22,30 @@ export enum StatutHopital {
   INACTIF = 'INACTIF',
 }
 
+export enum TypeHopital {
+  CSB1 = 'CSB1',
+  CSB2 = 'CSB2',
+  CHD1 = 'CHD1',
+  CHD2 = 'CHD2',
+  CHU = 'CHU',
+  CLINIQUE_PRIVEE = 'CLINIQUE_PRIVEE',
+  HOPITAL_PRIVE = 'HOPITAL_PRIVE',
+  POLYCLINIQUE = 'POLYCLINIQUE',
+  MATERNITE = 'MATERNITE',
+  CABINET_MEDICAL = 'CABINET_MEDICAL',
+}
+
 @Entity('hopitaux')
 export class Hopital {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  // ── Informations principales ──────────────────────────
   @Column()
   nom: string;
+
+  @Column({ type: 'enum', enum: TypeHopital, nullable: true })
+  type: TypeHopital;
 
   @Column()
   adresse: string;
@@ -39,6 +56,43 @@ export class Hopital {
   @Column()
   region: string;
 
+  @Column({ nullable: true })
+  localisation: string;
+
+  // ── Contact ──────────────────────────────────────────
+  @Column({ nullable: true })
+  telephone: string;
+
+  @Column({ nullable: true })
+  telephoneUrgence: string;
+
+  @Column({ nullable: true })
+  siteWeb: string;
+
+  // ── Profil public ─────────────────────────────────────
+  @Column({ nullable: true })
+  logoUrl: string;
+
+  @Column({ nullable: true })
+  slogan: string;
+
+  @Column({ nullable: true })
+  services: string;
+
+  @Column({ nullable: true })
+  heureOuverture: string;
+
+  @Column({ nullable: true })
+  heureFermeture: string;
+
+  // ── Direction ─────────────────────────────────────────
+  @Column({ nullable: true })
+  nomDirecteurMedical: string;
+
+  @Column({ nullable: true })
+  cinDirecteur: string;
+
+  // ── Documents légaux ──────────────────────────────────
   @Column({ unique: true, nullable: true })
   numeroAgrement: string;
 
@@ -48,24 +102,10 @@ export class Hopital {
   @Column({ nullable: true })
   stat: string;
 
-  @Column({ nullable: true })
-  nomDirecteurMedical: string;
-
-  @Column({ nullable: true })
-  cinDirecteur: string;
-
-  @Column({ nullable: true })
-  telephone: string;
-
-  @Column({ nullable: true })
-  heureOuverture: string;
-
-  @Column({ nullable: true })
-  heureFermeture: string;
-
   @Column('text', { array: true, default: [] })
   documentsUrl: string[];
 
+  // ── Statut ────────────────────────────────────────────
   @Column({
     type: 'enum',
     enum: StatutHopital,
@@ -91,6 +131,7 @@ export class Hopital {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  // ── Relations ─────────────────────────────────────────
   @OneToOne(() => User)
   @JoinColumn()
   user: User;
@@ -99,7 +140,7 @@ export class Hopital {
   medecins: Medecin[];
 
   @OneToMany(() => Service, (service) => service.hopital)
-  services: Service[];
+  servicesList: Service[];
 
   @OneToMany(() => RendezVous, (rdv) => rdv.hopital)
   rendezVous: RendezVous[];
