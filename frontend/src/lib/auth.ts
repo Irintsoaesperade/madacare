@@ -62,3 +62,10 @@ export async function inscrirePatient(payload: RegisterPayload) {
   );
   return data;
 }
+export async function inscrireHopital(payload: Record<string, string>) {
+  const { data } = await api.post<{ message: string }>(
+    "/hopitaux/inscrire",
+    payload
+  );
+  return data;
+}
