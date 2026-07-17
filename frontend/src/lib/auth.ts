@@ -1,5 +1,6 @@
 import { api } from "./api";
 import Cookies from "js-cookie";
+import { ModifierProfilFormValues } from "./validation/patient.schema";
 
 export type Role = "PATIENT" | "MEDECIN" | "HOPITAL_ADMIN" | "SUPER_ADMIN";
 
@@ -67,5 +68,26 @@ export async function inscrireHopital(payload: Record<string, string>) {
     "/hopitaux/inscrire",
     payload
   );
+  return data;
+}
+export interface PatientProfil {
+  id: string;
+  nom: string;
+  prenom: string;
+  dateNaissance: string | null;
+  lieuNaissance: string | null;
+  sexe: "M" | "F" | null;
+  telephone: string | null;
+  adresse: string | null;
+  user: { id: string; email: string; role: Role };
+}
+
+export async function recupererMonProfil() {
+  const { data } = await api.get<PatientProfil>("/patients/me");
+  return data;
+}
+
+export async function mettreAJourProfil(payload: Partial<ModifierProfilFormValues>) {
+  const { data } = await api.patch<PatientProfil>("/patients/me", payload);
   return data;
 }

@@ -33,6 +33,13 @@ export class ModifierPatientDto {
   @IsNotFutureDate()
   dateNaissance?: string;
 
+  @ApiProperty({ required: false, example: 'Fianarantsoa' })
+  @IsOptional()
+  @Matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, {
+    message: 'Le lieu de naissance ne doit contenir que des lettres',
+  })
+  lieuNaissance?: string;
+
   @ApiProperty({ enum: Sexe, required: false })
   @IsOptional()
   @IsEnum(Sexe)
